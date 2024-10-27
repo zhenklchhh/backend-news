@@ -1,0 +1,26 @@
+### GET all users
+GET http://localhost:8080/backend_news_war_exploded/users
+
+### GET user by id
+GET http://localhost:8080/backend_news_war_exploded/users/1
+
+### Create user
+POST /backend_news_war_exploded/users HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "name": "John",
+  "password": "123456",
+  "email": "john.doe@example.com"
+}
+
+### Update user
+PUT /backend_news_war_exploded/users/1 HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "password": "8521581",
+  "email": "john.filroch@example.com"
+}
