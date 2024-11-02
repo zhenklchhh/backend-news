@@ -10,27 +10,21 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jwt.AuthorizationVerifier;
+import lombok.extern.log4j.Log4j2;
 import models.User;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import services.UserService;
 
 /**
  * Servlet to handle user-related requests.
  */
+@Log4j2
 @WebServlet(urlPatterns = {"/users/*"})
 public class UserController extends HttpServlet {
     /**
      * Provides access to user-related services for managing user data.
      */
     private final UserService userService = new UserService();
-
-    /**
-     * Logger for the UserController class.
-     */
-    private static final Logger LOG = LogManager.
-            getLogger(UserController.class);
-
     /**
      * Handles GET requests for users.
      *
@@ -43,29 +37,34 @@ public class UserController extends HttpServlet {
                          final HttpServletResponse response)
             throws IOException {
         String path = request.getPathInfo();
+        if (!AuthorizationVerifier.verify(request.getHeader("Authorization"))) {
+            log.error("Authorization required");
+        }else{
+            log.info("User is authenticated");
+        }
         if (path == null || path.isEmpty()) {
-            LOG.info("Request to get all users.");
+            log.info("Request to get all users.");
             List<User> users = userService.getAllUsers();
             response.setContentType("application/json");
             response.getWriter().write(new Gson().toJson(users));
         } else if (path.startsWith("/")) {
             try {
                 int userId = Integer.parseInt(path.substring(1));
-                LOG.info("Request to get user with ID: {}", userId);
+                log.info("Request to get user with ID: {}", userId);
                 User user = userService.getUserById(userId);
-                LOG.info("Requested user: {}", user);
+                log.info("Requested user: {}", user);
                 response.getWriter().write(new Gson().toJson(user));
                 if (user == null) {
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    LOG.error("User not found.");
+                    log.error("User not found.");
                 }
             } catch (NumberFormatException e) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                LOG.error("Invalid ID format: {}", e.getMessage());
+                log.error("Invalid ID format: {}", e.getMessage());
             }
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            LOG.error("Invalid request format: {}", path);
+            log.error("Invalid request format: {}", path);
         }
     }
 
@@ -87,19 +86,19 @@ public class UserController extends HttpServlet {
             }
             String jsonBody = sb.toString();
             User newUser = new Gson().fromJson(jsonBody, User.class);
-            LOG.info("Request to create user: {}", newUser);
+            log.info("Request to create user: {}", newUser);
             User createdUser = userService.createUser(newUser);
-            LOG.info("User created: {}", createdUser);
+            log.info("User created: {}", createdUser);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (IOException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            LOG.error("Error creating user: Error reading request body.");
+            log.error("Error creating user: Error reading request body.");
         } catch (JsonSyntaxException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            LOG.error("Error creating user: Invalid JSON format.");
+            log.error("Error creating user: Invalid JSON format.");
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            LOG.error("Error creating user.");
+            log.error("Error creating user.");
         }
     }
 
@@ -117,13 +116,13 @@ public class UserController extends HttpServlet {
         String path = req.getPathInfo();
         if (path == null || path.isEmpty()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            LOG.error("Missing user ID in request.");
+            log.error("Missing user ID in request.");
             return;
         }
 
         try {
             int userId = Integer.parseInt(path.substring(1));
-            LOG.info("Request to update user with ID: {}", userId);
+            log.info("Request to update user with ID: {}", userId);
             BufferedReader reader = req.getReader();
             StringBuilder sb = new StringBuilder();
             String line;
@@ -136,7 +135,7 @@ public class UserController extends HttpServlet {
             User existingUser = userService.getUserById(userId);
             if (existingUser == null) {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                LOG.error("User not found.");
+                log.error("User not found.");
                 return;
             }
             existingUser.setPassword(updatedUser.getPassword());

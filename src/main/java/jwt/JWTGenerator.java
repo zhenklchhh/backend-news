@@ -14,7 +14,7 @@ import java.util.Date;
 public class JWTGenerator {
 
     public static String signJWT(int userId) throws IOException, JOSEException {
-        byte[] secret = KeyManager.getSecretKeyBytes();
+        byte[] secret = KeyManager.decodeToBytes(SecretKey.SECRET_KEY);
         JWSSigner signer = new MACSigner(secret);
 
         JWTClaimsSet claimsSet = new JWTClaimsSet();

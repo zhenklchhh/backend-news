@@ -25,6 +25,11 @@ public class KeyManager {
         String base64Key = Base64.getEncoder().encodeToString(keyBytes);
         Path envFile = Paths.get(ENV_FILE_NAME);
         Files.writeString(envFile, SECRET_KEY_ENV_VAR + "=" + base64Key);
+        System.out.println(base64Key);
+    }
+
+    public static byte[] decodeToBytes(String secret){
+        return Base64.getDecoder().decode(secret);
     }
 
     public static byte[] getSecretKeyBytes() throws IOException {
