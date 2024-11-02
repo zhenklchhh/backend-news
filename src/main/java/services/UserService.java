@@ -75,8 +75,9 @@ public class UserService {
      * Deletes a user.
      *
      * @param id The ID of the user to delete.
+     * @return
      */
-    public void deleteUser(final int id) {
-        userDao.deleteUser(id);
+    public boolean deleteUser(final int id) {
+        return userDao.deleteUser(id);
     }
 }

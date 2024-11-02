@@ -3,7 +3,6 @@ package dao;
 import models.User;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,37 +12,16 @@ import java.util.List;
 /**
  * Data Access Object for User entities.
  */
-public class UserDao {
-    /**
-     * A connection to the database. This connection is established in the
-     * constructor and is used for all database interactions within the DAO.
-     */
-    private Connection connection;
-
-    /**
-     * Constructor for UserDao.
-     * Establishes a connection to the database.
-     */
-    public UserDao() {
-        try {
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/postgres",
-                    "postgres",
-                    "123456");
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
+public class UserDao extends DataAccessObject{
     /**
      * Retrieves all users from the database.
      * @return A list of all users.
      */
-    public List<User> getAllUsers() {
+    public static List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        try (PreparedStatement stmt =
-                     connection.prepareStatement("SELECT * FROM Users")) {
+        try (Connection connection = getConnection();
+              PreparedStatement stmt =
+                 connection.prepareStatement("SELECT * FROM Users")) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 users.add(new User(
@@ -64,11 +42,12 @@ public class UserDao {
      * @param id The ID of the user to retrieve.
      * @return The user with the specified ID, or null if no such user exists.
      */
-    public User getUser(final int id) {
+    public static User getUser(final int id) {
         User user = null;
-        try (PreparedStatement stmt =
+        try (Connection connection = getConnection();
+                PreparedStatement stmt =
                      connection.prepareStatement(
-                             "SELECT * FROM Users WHERE id = ?")) {
+                         "SELECT * FROM Users WHERE id = ?")) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -92,11 +71,12 @@ public class UserDao {
      * Returns the created user object with the assigned ID.
      * @return The created user object with the assigned ID.
      */
-    public User createUser(final User user) {
-        try (PreparedStatement stmt = connection.prepareStatement(
-                "INSERT INTO Users (name, password, email) VALUES (?, ?, ?)");
+    public static User createUser(final User user) {
+        try (Connection connection = getConnection();
+            PreparedStatement stmt = connection.prepareStatement(
+            "INSERT INTO Users (name, password, email) VALUES (?, ?, ?)");
              PreparedStatement selectId = connection.
-                     prepareStatement("SELECT LAST_INSERT_ROWID()")
+                     prepareStatement("SELECT last_value FROM users_id_seq;")
         ) {
             final int nameIndex = 1;
             final int passwordIndex = 2;
@@ -124,8 +104,9 @@ public class UserDao {
      *
      * @param updateUser The updated user data.
      */
-    public void updateUser(final User updateUser) {
-        try (PreparedStatement stmt = connection.prepareStatement(
+    public static void updateUser(final User updateUser) {
+        try (Connection connection = getConnection();
+                PreparedStatement stmt = connection.prepareStatement(
                 "UPDATE Users SET name = ?, "
                         + "password = ?, email = ? WHERE id = ?")) {
             final int nameIndex = 1;
@@ -147,16 +128,19 @@ public class UserDao {
      *
      * @param id The ID of the user to delete.
      */
-    public void deleteUser(final int id) {
-        try (PreparedStatement stmt =
+    public static boolean deleteUser(final int id) {
+        try (Connection connection = getConnection();
+                PreparedStatement stmt =
                      connection.prepareStatement(
-                             "DELETE FROM Users WHERE id = ?"
-                     )) {
+                     "DELETE FROM Users WHERE id = ?"
+                )) {
             final int idIndex = 1;
             stmt.setInt(idIndex, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 }

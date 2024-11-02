@@ -74,12 +74,10 @@ public class UserController extends HttpServlet {
      *
      * @param request  The HTTP request.
      * @param response The HTTP response.
-     * @throws IOException If an I/O error occurs.
      */
     @Override
     protected void doPost(final HttpServletRequest request,
-                          final HttpServletResponse response)
-            throws IOException {
+                          final HttpServletResponse response) {
         try {
             BufferedReader reader = request.getReader();
             StringBuilder sb = new StringBuilder();
