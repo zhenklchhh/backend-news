@@ -54,7 +54,6 @@ public class RegistrationController extends HttpServlet {
             String jwtToken = JWTGenerator.signJWT(newUser.getId());
             resp.setContentType("application/json");
             resp.getWriter().write("{\"token\": \"" + jwtToken + "\"}");
-            log.info(jwtToken);
             log.info("Registratate successfully");
             resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (IOException | JsonSyntaxException e) {

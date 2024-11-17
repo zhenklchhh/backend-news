@@ -39,8 +39,8 @@ public class UserController extends HttpServlet {
         String path = request.getPathInfo();
         if (!AuthorizationVerifier.verify(request.getHeader("Authorization"))) {
             log.error("Authorization required");
-        }else{
-            log.info("User is authenticated");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
         if (path == null || path.isEmpty()) {
             log.info("Request to get all users.");

@@ -45,9 +45,9 @@ public class UserDao extends DataAccessObject{
     public static User getUser(final int id) {
         User user = null;
         try (Connection connection = getConnection();
-                PreparedStatement stmt =
+             PreparedStatement stmt =
                      connection.prepareStatement(
-                         "SELECT * FROM Users WHERE id = ?")) {
+                             "SELECT * FROM Users WHERE id = ?")) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -63,6 +63,26 @@ public class UserDao extends DataAccessObject{
         return user;
     }
 
+    public static User getUser(final String email) {
+        User user = null;
+        try (Connection connection = getConnection();
+             PreparedStatement stmt =
+                     connection.prepareStatement(
+                             "SELECT * FROM Users WHERE email = ?")) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                user = new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("password"),
+                        rs.getString("email"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
     /**
      * Creates a new user in the database.
      *

@@ -1,0 +1,5 @@
+2024-10-31 19:54:54.370 [main] INFO  jwt.KeyManager - secure_key
+2024-10-31 19:55:34.851 [main] INFO  jwt.KeyManager - secure_key
+2024-10-31 19:55:34.853 [main] INFO  jwt.KeyManager - SECRET_KEY=K0VjmmbcrFtDqp56QzADdfxR9vkgUWB/hObrzP0tveU=
+2024-10-31 19:57:00.213 [main] INFO  jwt.KeyManager - secure_key
+2024-10-31 19:57:00.216 [main] INFO  jwt.KeyManager - SECRET_KEY=K0VjmmbcrFtDqp56QzADdfxR9vkgUWB/hObrzP0tveU=

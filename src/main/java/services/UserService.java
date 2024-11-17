@@ -63,6 +63,15 @@ public class UserService {
     }
 
     /**
+     * Retrieves a user by Email.
+     *
+     * @param email The email of the user to retrieve.
+     * @return The user with the specified email, or null if no such user exists.
+     */
+    public User getUserByEmail(final String email) {
+        return userDao.getUser(email);
+    }
+    /**
      * Updates an existing user.
      *
      * @param user The updated user data.

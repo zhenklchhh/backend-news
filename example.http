@@ -1,6 +1,6 @@
 ### GET all users
 GET http://localhost:8080/backend_news_war_exploded/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNyIsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDgwXC9iYWNrZW5kX25ld3Nfd2FyX2V4cGxvZGVkIiwiZXhwIjoxNzMwNTU4MTM0OTcyfQ.ghWJ3y2o7Ynw4mPpLLg_Foqwtz9ZFSp1_qR_oNuQvbs
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNyIsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDgwXC9iYWNrZW5kX25ld3Nfd2FyX2V4cGxvZGVkIiwiZXhwIjoxNzMxODUxMjY2Nzg4fQ.XNHvoS5YtqKUXjrb8eSnFDYuhmvIphoXM3KvlBO7G80
 
 ### GET user by id
 GET http://localhost:8080/backend_news_war_exploded/users/1
@@ -17,6 +17,17 @@ Content-Type: application/json
   "email": "danik@example.com"
 }
 
+### Login user
+POST /backend_news_war_exploded/login HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "password": "123123gG",
+  "email": "danik@example.com"
+}
+
+
 ### Update user
 PUT /backend_news_war_exploded/users/1 HTTP/1.1
 Host: localhost:8080
@@ -25,4 +36,13 @@ Content-Type: application/json
 {
   "password": "8521581",
   "email": "john.filroch@example.com"
+}
+
+### Send message to all online users
+POST /backend_news_war_exploded/message HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "message": "Hello world"
 }

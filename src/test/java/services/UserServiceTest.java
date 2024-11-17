@@ -19,7 +19,7 @@ class UserServiceTest {
     @Test
     void createUser() {
         User user = new User("Test User", "test@example.com", "password");
-        when(userDao.createUser(user)).thenReturn(user);
+        when(UserDao.createUser(user)).thenReturn(user);
 
         User createdUser = userService.createUser(user);
 
